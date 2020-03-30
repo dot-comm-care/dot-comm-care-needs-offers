@@ -1,0 +1,52 @@
+.actions {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+@media only screen and (max-width: 50rem) {
+  .actions {
+    display: block;
+  }
+
+  .actions > * {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+.filters {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filter:not(:last-of-type) {
+  margin-right: 0.4rem;
+}
+
+.selectedFilter {
+  background-color: white;
+  border: 0.2rem #57d9a3 solid;
+  color: #57d9a3;
+  pointer-events: none;
+}
+
+.listings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.listings > * {
+  flex: 1;
+  min-width: 42rem;
+  max-width: 62rem;
+}
+
+.listings > *:not(:last-child) {
+  margin-bottom: 8rem;
+}

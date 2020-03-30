@@ -1,0 +1,69 @@
+.loaderContainer {
+  width: 20rem;
+  height: 6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader:after {
+  font-size: 2rem;
+  display: block;
+  animation: loader 3s linear infinite;
+  content: '';
+}
+
+@keyframes loader {
+  7% {
+    content: '🕛';
+  }
+
+  14% {
+    content: '🕐';
+  }
+
+  21% {
+    content: '🕑';
+  }
+
+  28% {
+    content: '🕒';
+  }
+
+  35% {
+    content: '🕓';
+  }
+
+  42% {
+    content: '🕔';
+  }
+
+  49% {
+    content: '🕕';
+  }
+
+  56% {
+    content: '🕖';
+  }
+
+  63% {
+    content: '🕗';
+  }
+
+  70% {
+    content: '🕘';
+  }
+
+  77% {
+    content: '🕙';
+  }
+
+  84% {
+    content: '🕚';
+  }
+
+  100% {
+    content: '🕛';
+  }
+}

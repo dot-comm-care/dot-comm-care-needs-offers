@@ -1,0 +1,47 @@
+.listing {
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+}
+
+.listingBody {
+  flex: 1;
+}
+
+.listing .title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+}
+
+.listing .title b {
+  font-weight: 800;
+}
+
+.date {
+  font-size: 1.2rem;
+}
+
+.listing .organizationLogo {
+  max-height: 4rem;
+  max-width: 12rem;
+}
+
+.listing .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+}
+
+.locationPin {
+  height: 1.4rem;
+  margin-right: 0.8rem;
+}
