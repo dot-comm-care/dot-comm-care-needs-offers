@@ -4,7 +4,6 @@ import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
 
 import { TYPES, OFFERS_SHEET_NAME } from "../../utils/listingUtils"
-import Page from "../Page"
 import Listing from "../Listing"
 import cs from "./styles.module.css"
 
