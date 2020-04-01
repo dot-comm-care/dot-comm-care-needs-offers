@@ -5,7 +5,8 @@ import cs from './styles.module.css';
 export default () => {
   return (
     <header className={cs.header}>
-      <h1>MAMAS Needs/Offers</h1>
+      <img src={require('./MAMAS-logo.png')} className={cs.logo} alt="MAMS logo" />
+      <h1 className={cs.headerTitle}>Offers List</h1>
     </header>
   );
 };
