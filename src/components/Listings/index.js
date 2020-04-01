@@ -23,6 +23,7 @@ class Listings extends React.Component {
     const listings = this.props
       .getSheet(OFFERS_SHEET_NAME)
       .getData()
+      .filter(l => !!l["name:"])
 
     return (
       <div>
@@ -30,7 +31,7 @@ class Listings extends React.Component {
           <Link to="/new">
             <button>New Offer</button>
           </Link>
-          <div className={cs.filters}>
+          {/* <div className={cs.filters}>
             {TYPES.map(filter => (
               <button
                 key={filter}
@@ -45,7 +46,7 @@ class Listings extends React.Component {
                 {filter}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
         <div className={cs.listings}>
           {listings.map((listing, i) => (
