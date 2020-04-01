@@ -22,15 +22,13 @@ class Listings extends React.Component {
 
     const listings = this.props
       .getSheet(OFFERS_SHEET_NAME)
-      .filter(filters)
-      .sort("Timestamp")
-      .reverse()
+      .getData()
 
     return (
       <div>
         <div className={cs.actions}>
           <Link to="/new">
-            <button>New Listing</button>
+            <button>New Offer</button>
           </Link>
           <div className={cs.filters}>
             {TYPES.map(filter => (

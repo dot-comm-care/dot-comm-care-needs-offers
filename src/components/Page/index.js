@@ -12,7 +12,7 @@ require("typeface-nunito")
 
 export default props => (
   <div>
-    <Header />
+    <Header className={classnames(cs.page, props.className)}/>
     <main className={classnames(cs.page, props.className)}>
       {props.children}
     </main>
