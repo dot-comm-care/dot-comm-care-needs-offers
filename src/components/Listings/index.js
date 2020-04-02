@@ -1,26 +1,22 @@
 import React from "react"
 import { Link } from "gatsby"
 import { connectToSpreadsheet } from "react-google-sheet-connector"
-import classnames from "classnames"
 
 import { TYPES, OFFERS_SHEET_NAME } from "../../utils/listingUtils"
 import Listing from "../Listing"
 import cs from "./styles.module.css"
 
-class Listings extends React.Component {
-  state = {
-    typeFilter: TYPES[0],
-  }
-
-  render() {
-    const { typeFilter } = this.state
+const Listings =
+  typeof window !== `undefined` &&
+  connectToSpreadsheet(props => {
+    const [typeFilter, setTypeFilter] = useState(TYPES[0])
     let filters = {}
 
     if (typeFilter !== TYPES[0]) {
       filters["typeOfSupport?"] = typeFilter
     }
 
-    const listings = this.props
+    const listings = props
       .getSheet(OFFERS_SHEET_NAME)
       .getData()
       .filter(l => !!l["name:"])
@@ -31,7 +27,7 @@ class Listings extends React.Component {
           <Link to="/new">
             <button>New Offer</button>
           </Link>
-          {/* <div className={cs.filters}>
+          <div className={cs.filters}>
             {TYPES.map(filter => (
               <button
                 key={filter}
@@ -40,13 +36,13 @@ class Listings extends React.Component {
                   [cs.notSelectedFilter]: filter !== typeFilter,
                 })}
                 onClick={() => {
-                  this.setState({ typeFilter: filter })
+                  setTypeFilter(filter)
                 }}
               >
                 {filter}
               </button>
             ))}
-          </div> */}
+          </div>
         </div>
         <div className={cs.listings}>
           {listings.map((listing, i) => (
@@ -55,7 +51,6 @@ class Listings extends React.Component {
         </div>
       </div>
     )
-  }
-}
+  })
 
-export default connectToSpreadsheet(Listings)
+export default Listings
