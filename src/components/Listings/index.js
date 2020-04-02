@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "gatsby"
 import { connectToSpreadsheet } from "react-google-sheet-connector"
+import classnames from "classnames"
 
 import { TYPES, OFFERS_SHEET_NAME } from "../../utils/listingUtils"
 import Listing from "../Listing"
