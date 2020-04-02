@@ -9,7 +9,7 @@ import cs from "./styles.module.css"
 const Listings =
   typeof window !== `undefined` &&
   connectToSpreadsheet(props => {
-    const [typeFilter, setTypeFilter] = useState(TYPES[0])
+    const [typeFilter, setTypeFilter] = React.useState(TYPES[0])
     let filters = {}
 
     if (typeFilter !== TYPES[0]) {
