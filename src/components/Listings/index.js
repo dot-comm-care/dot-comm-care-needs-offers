@@ -31,14 +31,13 @@ const Listings =
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
     const listings = useMemo(() => {
-      let keyIndex = 0
       return (
         props
           .getSheet(OFFERS_SHEET_NAME)
           .getData()
           .filter(l => !!l["name:"])
           // assign a stable unique key for each listing
-          .map(l => ({ ...l, key: `listing-${keyIndex++}` }))
+          .map((l, i) => ({ ...l, key: `listing-${i}` }))
       )
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
