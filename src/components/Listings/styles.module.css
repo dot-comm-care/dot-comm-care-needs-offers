@@ -24,20 +24,18 @@
   justify-content: flex-end;
 }
 
+.filter {
+  margin-bottom: 0;
+}
+
+.filter:first-of-type,
 .filter:not(:last-of-type) {
   margin-right: 0.4rem;
 }
 
 .selectedFilter {
   background-color: white;
-  border: 0.2rem #E39774 solid;
-  color: #E39774;
+  border: 0.2rem #e39774 solid;
+  color: #e39774;
   pointer-events: none;
-}
-
-.listings {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
 }

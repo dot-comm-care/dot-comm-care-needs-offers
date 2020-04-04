@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { Link } from "gatsby"
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
@@ -6,7 +6,7 @@ import { useDebounce } from "use-debounce"
 
 import { TYPES, OFFERS_SHEET_NAME } from "../../utils/listingUtils"
 import useTextSearch from "../../utils/useTextSearch"
-import Listing from "../Listing"
+import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
 
 const FULL_TEXT_SEARCH_KEYS = [
@@ -20,7 +20,7 @@ const Listings =
   connectToSpreadsheet(props => {
     const [typeFilter, setTypeFilter] = useState(TYPES[0])
     const [searchTerm, setSearchTerm] = useState("")
-    const [debouncedSearchTerm] = useDebounce(searchTerm, 1000)
+    const [debouncedSearchTerm] = useDebounce(searchTerm, 250)
 
     let filters = {}
 
@@ -28,10 +28,20 @@ const Listings =
       filters["typeOfSupport?"] = typeFilter
     }
 
-    const listings = props
-      .getSheet(OFFERS_SHEET_NAME)
-      .getData()
-      .filter(l => !!l["name:"])
+    // FIXME: choose correct deps to update this memoized result
+    // currently only updated once on initial render
+    const listings = useMemo(() => {
+      let keyIndex = 0
+      return (
+        props
+          .getSheet(OFFERS_SHEET_NAME)
+          .getData()
+          .filter(l => !!l["name:"])
+          // assign a stable unique key for each listing
+          .map(l => ({ ...l, key: `listing-${keyIndex++}` }))
+      )
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const searchResult = useTextSearch(
       listings,
@@ -46,6 +56,12 @@ const Listings =
             <button>New Offer</button>
           </Link>
           <div className={cs.filters}>
+            <input
+              type="text"
+              placeholder="Search"
+              onChange={e => setSearchTerm(e.target.value)}
+              className={classnames(cs.filter)}
+            ></input>
             {TYPES.map(filter => (
               <button
                 key={filter}
@@ -60,19 +76,8 @@ const Listings =
                 {filter}
               </button>
             ))}
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-            ></input>
           </div>
-        </div>
-        <div className={cs.listings}>
-          {searchResult.map((listing, i) => (
-            // FIXME: come up with unique key for listing
-            <Listing key={i} listing={listing}></Listing>
-          ))}
+          <ListingResults listings={searchResult} />
         </div>
       </div>
     )
