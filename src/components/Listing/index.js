@@ -1,17 +1,17 @@
 import React from "react"
 import moment from "moment"
 
-import { NEEDS_SHEET_COLUMN_INDICES } from "../../utils/listingUtils"
+import { NEED_TYPES } from "../../utils/listingUtils"
 import cs from "./styles.module.css"
 
-const FinancialNeedCard = listing => (
+const FinancialNeedCard = ({ needFrequency }) => (
   <div>
     <table>
       <tr>
         <td>Frequency:</td>
-        <td>{listing[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency]}</td>
+        <td>{needFrequency}</td>
       </tr>
-      <tr>
+      {/* <tr>
         <td>Timing:</td>
         <td>{listing[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming]}</td>
       </tr>
@@ -25,31 +25,37 @@ const FinancialNeedCard = listing => (
       <tr>
         <td>Preferred Method(s):</td>
         <td>{listing[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod]}</td>
-      </tr>
+      </tr> */}
     </table>
   </div>
 )
 
-export default ({ listing }) => {
+const cardNeedTypesMap = {
+  [NEED_TYPES.FINANCIAL]: FinancialNeedCard,
+}
+
+export default ({ type, name, createdAt, email, meta }) => {
   // create separate need cards for various needs within the same row
-  let Card = FinancialNeedCard
+  let Card = cardNeedTypesMap[type]
+  if (!Card) {
+    throw new Error(`Unsupported need type ${type}`)
+  }
 
   return (
     <article className={cs.listing}>
       <div className={cs.title}>
         <div>
-          <b>{listing[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous"}</b>
+          <b>{name}</b>
           <div className={cs.date}>
-            Posted on{" "}
-            {moment(listing[NEEDS_SHEET_COLUMN_INDICES.createdAt]).format("LL")}
+            Posted on {moment(createdAt).format("LL")}
           </div>
         </div>
       </div>
       <div className={cs.listingBody}>
-        <Card listing={listing} />
+        <Card meta={meta} />
       </div>
       <div className={cs.actions}>
-        <a href={`mailto:${listing.emailAddress}`}>
+        <a href={`mailto:${email}`}>
           <button className={cs.button}>Meet Need</button>
         </a>
       </div>

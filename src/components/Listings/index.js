@@ -8,13 +8,12 @@ import { NEEDS_SHEET_NAME } from "../../utils/listingUtils"
 import useTextSearch from "../../utils/useTextSearch"
 import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
-import { NEEDS_SHEET_COLUMN_INDICES } from "../../utils/listingUtils"
+import {
+  NEEDS_SHEET_COLUMN_INDICES,
+  NEED_TYPES,
+} from "../../utils/listingUtils"
 
 const FULL_TEXT_SEARCH_KEYS = ["name"]
-
-const TYPES = {
-  FINANCIAL: "FINANCIAL",
-}
 
 /**
  * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
@@ -28,11 +27,16 @@ function parseRow(result, row, index) {
   if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
     const parsedFinancialMetadata = {
       // any data parsed out of the row that is needed by the financial card
+      needFrequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
     }
+
     rowNeeds.push({
       id: `listing-${index}-financial`,
-      type: TYPES.FINANCIAL,
+      type: NEED_TYPES.FINANCIAL,
       meta: parsedFinancialMetadata,
+      name: row[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous",
+      createdAt: row[NEEDS_SHEET_COLUMN_INDICES.createdAt],
+      email: "test@gmail.com",
     })
   }
 

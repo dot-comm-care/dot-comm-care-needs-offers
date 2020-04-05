@@ -19,3 +19,7 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
   financial_maxFundingNeed: 18,
   financial_fundingMethod: 19,
 }
+
+export const NEED_TYPES = {
+  FINANCIAL: "FINANCIAL",
+}
