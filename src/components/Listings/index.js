@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo, useCallback } from "react"
 import { Link } from "gatsby"
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
@@ -8,8 +8,47 @@ import { NEEDS_SHEET_NAME } from "../../utils/listingUtils"
 import useTextSearch from "../../utils/useTextSearch"
 import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
+import { NEEDS_SHEET_COLUMN_INDICES } from "../../utils/listingUtils"
 
 const FULL_TEXT_SEARCH_KEYS = ["name"]
+
+const TYPES = {
+  FINANCIAL: "FINANCIAL",
+}
+
+/**
+ * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
+ * TODO: implement all types and parse metadata for each card
+ * @param {*} result
+ * @param {*} row
+ * @param {*} index
+ */
+function parseRow(result, row, index) {
+  const rowNeeds = []
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
+    const parsedFinancialMetadata = {
+      // any data parsed out of the row that is needed by the financial card
+    }
+    rowNeeds.push({
+      id: `listing-${index}-financial`,
+      type: TYPES.FINANCIAL,
+      meta: parsedFinancialMetadata,
+    })
+  }
+
+  result.push(...rowNeeds)
+  return result
+}
+
+/**
+ * Stub implementation. Returns a filter function which filters needs.
+ * TODO: implement filtering
+ * @param {*} needs
+ * @param {*} filters
+ */
+function createListingsFilter(filters) {
+  return listings => listings
+}
 
 const Listings =
   typeof window !== `undefined` &&
@@ -26,19 +65,25 @@ const Listings =
 
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
+    const listingsFilter = useCallback(() => createListingsFilter(filters), [
+      filters,
+    ])
+
     const listings = useMemo(() => {
-      return (
-        props
-          .getSheet(NEEDS_SHEET_NAME)
-          .getData()
-          // assign a stable unique key for each listing
-          .map((l, i) => ({ ...l, key: `listing-${i}` }))
-      )
+      return props
+        .getSheet(NEEDS_SHEET_NAME)
+        .getData()
+        .reduce(parseRow, [])
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const searchResult = useTextSearch(
+    const filteredListings = useMemo(() => listings.filter(listingsFilter), [
       listings,
+      listingsFilter,
+    ])
+
+    const searchResult = useTextSearch(
+      filteredListings,
       FULL_TEXT_SEARCH_KEYS,
       debouncedSearchTerm
     )

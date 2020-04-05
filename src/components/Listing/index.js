@@ -32,12 +32,9 @@ const FinancialNeedCard = listing => (
 
 export default ({ listing }) => {
   // create separate need cards for various needs within the same row
-  let needCards = []
-  if (listing[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
-    needCards.push(FinancialNeedCard)
-  }
+  let Card = FinancialNeedCard
 
-  return needCards.map(renderer => (
+  return (
     <article className={cs.listing}>
       <div className={cs.title}>
         <div>
@@ -48,12 +45,14 @@ export default ({ listing }) => {
           </div>
         </div>
       </div>
-      <div className={cs.listingBody}>{renderer(listing)}</div>
+      <div className={cs.listingBody}>
+        <Card listing={listing} />
+      </div>
       <div className={cs.actions}>
         <a href={`mailto:${listing.emailAddress}`}>
           <button className={cs.button}>Meet Need</button>
         </a>
       </div>
     </article>
-  ))
+  )
 }
