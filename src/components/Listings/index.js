@@ -4,38 +4,33 @@ import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
 import { useDebounce } from "use-debounce"
 
-import { TYPES, OFFERS_SHEET_NAME } from "../../utils/listingUtils"
+import { NEEDS_SHEET_NAME } from "../../utils/listingUtils"
 import useTextSearch from "../../utils/useTextSearch"
 import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
 
-const FULL_TEXT_SEARCH_KEYS = [
-  "name:",
-  "pleaseCheckOffWhatYouCanOffer:",
-  "areThereAnySuppliesOrFoodThatYouCouldContributeToACommunalPool?PleaseBeSpecificInQuantity",
-]
+const FULL_TEXT_SEARCH_KEYS = ["name"]
 
 const Listings =
   typeof window !== `undefined` &&
   connectToSpreadsheet(props => {
-    const [typeFilter, setTypeFilter] = useState(TYPES[0])
+    const [typeFilter, setTypeFilter] = useState(null)
     const [searchTerm, setSearchTerm] = useState("")
     const [debouncedSearchTerm] = useDebounce(searchTerm, 250)
 
     let filters = {}
 
-    if (typeFilter !== TYPES[0]) {
-      filters["typeOfSupport?"] = typeFilter
-    }
+    // if (typeFilter !== TYPES[0]) {
+    //   filters["typeOfSupport?"] = typeFilter
+    // }
 
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
     const listings = useMemo(() => {
       return (
         props
-          .getSheet(OFFERS_SHEET_NAME)
+          .getSheet(NEEDS_SHEET_NAME)
           .getData()
-          .filter(l => !!l["name:"])
           // assign a stable unique key for each listing
           .map((l, i) => ({ ...l, key: `listing-${i}` }))
       )
@@ -61,7 +56,7 @@ const Listings =
               onChange={e => setSearchTerm(e.target.value)}
               className={classnames(cs.filter)}
             ></input>
-            {TYPES.map(filter => (
+            {/* {TYPES.map(filter => (
               <button
                 key={filter}
                 className={classnames(cs.filter, {
@@ -74,10 +69,10 @@ const Listings =
               >
                 {filter}
               </button>
-            ))}
+            ))} */}
           </div>
-          <ListingResults listings={searchResult} />
         </div>
+        <ListingResults listings={searchResult} />
       </div>
     )
   })

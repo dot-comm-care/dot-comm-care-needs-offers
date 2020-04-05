@@ -6,9 +6,9 @@ import cs from "./styles.module.css"
 function ListingResults({ listings }) {
   return (
     <div className={cs.listings}>
-      {listings.map(listing => (
-        <Listing key={listing.key} listing={listing}></Listing>
-      ))}
+      {listings
+        .map(listing => <Listing key={listing.key} listing={listing}></Listing>)
+        .flat()}
     </div>
   )
 }
