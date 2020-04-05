@@ -5,10 +5,11 @@
   justify-content: space-between;
   margin: 1rem;
   padding: 2rem 4rem;
+  text-align: center;
 }
 
 .headerTitle {
-    margin: 0;
+  margin: 0;
 }
 
 .logo {
