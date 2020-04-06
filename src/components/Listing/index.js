@@ -2,6 +2,7 @@ import React from "react"
 import moment from "moment"
 
 import { NEED_TYPES } from "../../utils/listingUtils"
+import ListingActions from "./ListingActions"
 import cs from "./styles.module.css"
 
 const FinancialNeedCard = ({
@@ -40,7 +41,7 @@ const cardNeedTypesMap = {
 }
 
 export default ({ listing }) => {
-  const { type, name, createdAt, contact, contactMethod, meta } = listing
+  const { type, name, createdAt, contactMethod, meta } = listing
   // create separate need cards for various needs within the same row
   let Card = cardNeedTypesMap[type]
   if (!Card) {
@@ -60,20 +61,7 @@ export default ({ listing }) => {
       <div className={cs.listingBody}>
         <Card meta={meta} />
       </div>
-      <div className={cs.actions}>
-        {/* FIXME: Not all users have provided email as contact method */}
-        {contactMethod === "email" && (
-          <a href={`mailto:${contact}`}>
-            <button className={cs.button}>Meet Need</button>
-          </a>
-        )}
-        {contactMethod === "phone" && (
-          <a href={`tel:${contact}`}>
-            <button className={cs.button}>Call {contact}</button>
-          </a>
-        )}
-        {/* FIXME: what do we show if the user provided some contact method we don't expect? */}
-      </div>
+      <ListingActions contactMethod={contactMethod} type={type} />
     </article>
   )
 }
