@@ -40,7 +40,7 @@ const cardNeedTypesMap = {
 }
 
 export default ({ listing }) => {
-  const { type, name, createdAt, email, meta } = listing
+  const { type, name, createdAt, contact, contactMethod, meta } = listing
   // create separate need cards for various needs within the same row
   let Card = cardNeedTypesMap[type]
   if (!Card) {
@@ -61,9 +61,18 @@ export default ({ listing }) => {
         <Card meta={meta} />
       </div>
       <div className={cs.actions}>
-        <a href={`mailto:${email}`}>
-          <button className={cs.button}>Meet Need</button>
-        </a>
+        {/* FIXME: Not all users have provided email as contact method */}
+        {contactMethod === "email" && (
+          <a href={`mailto:${contact}`}>
+            <button className={cs.button}>Meet Need</button>
+          </a>
+        )}
+        {contactMethod === "phone" && (
+          <a href={`tel:${contact}`}>
+            <button className={cs.button}>Call {contact}</button>
+          </a>
+        )}
+        {/* FIXME: what do we show if the user provided some contact method we don't expect? */}
       </div>
     </article>
   )

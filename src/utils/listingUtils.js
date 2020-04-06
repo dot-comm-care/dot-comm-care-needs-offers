@@ -21,5 +21,6 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
 }
 
 export const NEED_TYPES = {
-  FINANCIAL: "FINANCIAL",
+  FINANCIAL: "Financial",
+  FOOD: "Food",
 }
