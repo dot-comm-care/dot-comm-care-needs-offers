@@ -2,18 +2,15 @@ import React, { useMemo, useReducer } from "react"
 import { Link } from "gatsby"
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
-import { useDebounce } from "use-debounce"
 
 import {
   NEEDS_SHEET_NAME,
   NEED_TYPES,
   NEEDS_SHEET_COLUMN_INDICES,
 } from "../../utils/listingUtils"
-import useTextSearch from "../../utils/useTextSearch"
+import useFilteredListings from "../../utils/useFilteredListings"
 import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
-
-const FULL_TEXT_SEARCH_KEYS = ["name"]
 
 /**
  * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
@@ -53,20 +50,6 @@ function parseRow(result, row, index) {
   return result
 }
 
-/**
- * Returns a filter function which filters listings.
- * @param {*} needs
- * @param {*} filters
- */
-function createListingsFilter(filters) {
-  return listing => {
-    if (filters.typeFilter && filters.typeFilter !== listing.type) {
-      return false
-    }
-    return true
-  }
-}
-
 function filterReducer(state, action) {
   switch (action.type) {
     case "setTypeFilter":
@@ -77,22 +60,6 @@ function filterReducer(state, action) {
     default:
       throw new Error(`invalid action type ${action.type}`)
   }
-}
-
-function useFilteredListings(filters, listings) {
-  const listingsFilter = useMemo(() => createListingsFilter(filters), [filters])
-  const filteredListings = useMemo(() => listings.filter(listingsFilter), [
-    listings,
-    listingsFilter,
-  ])
-  const [debouncedSearchTerm] = useDebounce(filters.searchTerm, 250)
-
-  const searchResult = useTextSearch(
-    filteredListings,
-    FULL_TEXT_SEARCH_KEYS,
-    debouncedSearchTerm
-  )
-  return searchResult
 }
 
 const Listings =
