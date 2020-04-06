@@ -1,59 +1,79 @@
 import React from "react"
 import moment from "moment"
 
-import { NEEDS_SHEET_COLUMN_INDICES } from "../../utils/listingUtils"
+import { NEED_TYPES } from "../../utils/listingUtils"
 import cs from "./styles.module.css"
 
-const FinancialNeedCard = listing => (
+const FinancialNeedCard = ({
+  frequency,
+  timing,
+  minFundingNeeded,
+  maxFundingNeeded,
+  fundingMethod,
+}) => (
   <div>
     <table>
       <tr>
         <td>Frequency:</td>
-        <td>{listing[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency]}</td>
+        <td>{frequency}</td>
       </tr>
       <tr>
         <td>Timing:</td>
-        <td>{listing[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming]}</td>
+        <td>{timing}</td>
       </tr>
       <tr>
         <td>Funding Needed:</td>
         <td>
-          ${listing[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed]} - $
-          {listing[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed]}
+          ${minFundingNeeded} - ${maxFundingNeeded}
         </td>
       </tr>
       <tr>
         <td>Preferred Method(s):</td>
-        <td>{listing[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod]}</td>
+        <td>{fundingMethod}</td>
       </tr>
     </table>
   </div>
 )
 
+const cardNeedTypesMap = {
+  [NEED_TYPES.FINANCIAL]: FinancialNeedCard,
+}
+
 export default ({ listing }) => {
+  const { type, name, createdAt, contact, contactMethod, meta } = listing
   // create separate need cards for various needs within the same row
-  let needCards = []
-  if (listing[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
-    needCards.push(FinancialNeedCard)
+  let Card = cardNeedTypesMap[type]
+  if (!Card) {
+    throw new Error(`Unsupported need type ${type}`)
   }
 
-  return needCards.map(renderer => (
+  return (
     <article className={cs.listing}>
       <div className={cs.title}>
         <div>
-          <b>{listing[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous"}</b>
+          <b>{name}</b>
           <div className={cs.date}>
-            Posted on{" "}
-            {moment(listing[NEEDS_SHEET_COLUMN_INDICES.createdAt]).format("LL")}
+            Posted on {moment(createdAt).format("LL")}
           </div>
         </div>
       </div>
-      <div className={cs.listingBody}>{renderer(listing)}</div>
+      <div className={cs.listingBody}>
+        <Card meta={meta} />
+      </div>
       <div className={cs.actions}>
-        <a href={`mailto:${listing.emailAddress}`}>
-          <button className={cs.button}>Meet Need</button>
-        </a>
+        {/* FIXME: Not all users have provided email as contact method */}
+        {contactMethod === "email" && (
+          <a href={`mailto:${contact}`}>
+            <button className={cs.button}>Meet Need</button>
+          </a>
+        )}
+        {contactMethod === "phone" && (
+          <a href={`tel:${contact}`}>
+            <button className={cs.button}>Call {contact}</button>
+          </a>
+        )}
+        {/* FIXME: what do we show if the user provided some contact method we don't expect? */}
       </div>
     </article>
-  ))
+  )
 }

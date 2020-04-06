@@ -1,47 +1,119 @@
-import React, { useState, useMemo } from "react"
+import React, { useMemo, useReducer } from "react"
 import { Link } from "gatsby"
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
 import { useDebounce } from "use-debounce"
 
-import { NEEDS_SHEET_NAME } from "../../utils/listingUtils"
+import {
+  NEEDS_SHEET_NAME,
+  NEED_TYPES,
+  NEEDS_SHEET_COLUMN_INDICES,
+} from "../../utils/listingUtils"
 import useTextSearch from "../../utils/useTextSearch"
 import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
 
 const FULL_TEXT_SEARCH_KEYS = ["name"]
 
+/**
+ * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
+ * TODO: implement all types and parse metadata for each card
+ * @param {*} result
+ * @param {*} row
+ * @param {*} index
+ */
+function parseRow(result, row, index) {
+  const rowNeeds = []
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
+    const parsedFinancialMetadata = {
+      // any data parsed out of the row that is needed by the financial card
+      frequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
+      timing: row[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming],
+      minfundingNeeded:
+        row[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed],
+      maxFundingNeeded:
+        row[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed],
+      fundingMethod: row[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod],
+    }
+
+    rowNeeds.push({
+      id: `listing-${index}-financial`,
+      type: NEED_TYPES.FINANCIAL,
+      meta: parsedFinancialMetadata,
+      name: row[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous",
+      createdAt: row[NEEDS_SHEET_COLUMN_INDICES.createdAt],
+      contactMethod: row[
+        NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
+      ]?.toLowerCase(),
+      contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
+    })
+  }
+
+  result.push(...rowNeeds)
+  return result
+}
+
+/**
+ * Returns a filter function which filters listings.
+ * @param {*} needs
+ * @param {*} filters
+ */
+function createListingsFilter(filters) {
+  return listing => {
+    if (filters.typeFilter && filters.typeFilter !== listing.type) {
+      return false
+    }
+    return true
+  }
+}
+
+function filterReducer(state, action) {
+  switch (action.type) {
+    case "setTypeFilter":
+      return { ...state, typeFilter: action.value }
+    case "setSearchTerm":
+      return { ...state, searchTerm: action.value }
+    // other filters
+    default:
+      throw new Error(`invalid action type ${action.type}`)
+  }
+}
+
+function useFilteredListings(filters, listings) {
+  const listingsFilter = useMemo(() => createListingsFilter(filters), [filters])
+  const filteredListings = useMemo(() => listings.filter(listingsFilter), [
+    listings,
+    listingsFilter,
+  ])
+  const [debouncedSearchTerm] = useDebounce(filters.searchTerm, 250)
+
+  const searchResult = useTextSearch(
+    filteredListings,
+    FULL_TEXT_SEARCH_KEYS,
+    debouncedSearchTerm
+  )
+  return searchResult
+}
+
 const Listings =
   typeof window !== `undefined` &&
   connectToSpreadsheet(props => {
-    const [typeFilter, setTypeFilter] = useState(null)
-    const [searchTerm, setSearchTerm] = useState("")
-    const [debouncedSearchTerm] = useDebounce(searchTerm, 250)
-
-    let filters = {}
-
-    // if (typeFilter !== TYPES[0]) {
-    //   filters["typeOfSupport?"] = typeFilter
-    // }
+    const [filters, dispatch] = useReducer(filterReducer, {
+      typeFilter: null,
+      searchTerm: "",
+    })
 
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
     const listings = useMemo(() => {
-      return (
-        props
-          .getSheet(NEEDS_SHEET_NAME)
-          .getData()
-          // assign a stable unique key for each listing
-          .map((l, i) => ({ ...l, key: `listing-${i}` }))
-      )
+      return props
+        .getSheet(NEEDS_SHEET_NAME)
+        .getData()
+        .reduce(parseRow, [])
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const searchResult = useTextSearch(
-      listings,
-      FULL_TEXT_SEARCH_KEYS,
-      debouncedSearchTerm
-    )
+    const filteredListings = useFilteredListings(filters, listings)
 
     return (
       <div>
@@ -53,26 +125,28 @@ const Listings =
             <input
               type="text"
               placeholder="Search"
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={e =>
+                dispatch({ type: "setSearchTerm", value: e.target.value })
+              }
               className={classnames(cs.filter)}
             ></input>
-            {/* {TYPES.map(filter => (
+            {Object.values(NEED_TYPES).map(filter => (
               <button
                 key={filter}
                 className={classnames(cs.filter, {
-                  [cs.selectedFilter]: filter === typeFilter,
-                  [cs.notSelectedFilter]: filter !== typeFilter,
+                  [cs.selectedFilter]: filter === filters.typeFilter,
+                  [cs.notSelectedFilter]: filter !== filters.typeFilter,
                 })}
                 onClick={() => {
-                  setTypeFilter(filter)
+                  dispatch({ type: "setTypeFilter", value: filter })
                 }}
               >
                 {filter}
               </button>
-            ))} */}
+            ))}
           </div>
         </div>
-        <ListingResults listings={searchResult} />
+        <ListingResults listings={filteredListings} />
       </div>
     )
   })
