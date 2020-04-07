@@ -20,7 +20,17 @@ import cs from "./styles.module.css"
  * @param {*} index
  */
 function parseRow(result, row, index) {
-  const rowNeeds = []
+  const sharedCardProps = {
+    id: `listing-${index}`,
+    type: NEED_TYPES.FINANCIAL,
+    name: row[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous",
+    createdAt: row[NEEDS_SHEET_COLUMN_INDICES.createdAt],
+    contactMethod: row[
+      NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
+    ]?.toLowerCase(),
+    contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
+  }
+
   if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
     const parsedFinancialMetadata = {
       // any data parsed out of the row that is needed by the financial card
@@ -33,20 +43,12 @@ function parseRow(result, row, index) {
       fundingMethod: row[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod],
     }
 
-    rowNeeds.push({
-      id: `listing-${index}-financial`,
-      type: NEED_TYPES.FINANCIAL,
+    result.push({
       meta: parsedFinancialMetadata,
-      name: row[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous",
-      createdAt: row[NEEDS_SHEET_COLUMN_INDICES.createdAt],
-      contactMethod: row[
-        NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
-      ]?.toLowerCase(),
-      contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
+      ...sharedCardProps,
     })
   }
 
-  result.push(...rowNeeds)
   return result
 }
 

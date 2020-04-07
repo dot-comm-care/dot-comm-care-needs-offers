@@ -12,8 +12,8 @@ const FinancialNeedCard = ({
   maxFundingNeeded,
   fundingMethod,
 }) => (
-  <div>
-    <table>
+  <table>
+    <tbody>
       <tr>
         <td>Frequency:</td>
         <td>{frequency}</td>
@@ -32,8 +32,8 @@ const FinancialNeedCard = ({
         <td>Preferred Method(s):</td>
         <td>{fundingMethod}</td>
       </tr>
-    </table>
-  </div>
+    </tbody>
+  </table>
 )
 
 const cardNeedTypesMap = {
@@ -42,6 +42,9 @@ const cardNeedTypesMap = {
 
 export default ({ listing }) => {
   const { type, name, createdAt, contactMethod, meta } = listing
+
+  console.log(meta)
+
   // create separate need cards for various needs within the same row
   let Card = cardNeedTypesMap[type]
   if (!Card) {
@@ -59,7 +62,7 @@ export default ({ listing }) => {
         </div>
       </div>
       <div className={cs.listingBody}>
-        <Card meta={meta} />
+        <Card {...meta} />
       </div>
       <ListingActions contactMethod={contactMethod} type={type} />
     </article>
