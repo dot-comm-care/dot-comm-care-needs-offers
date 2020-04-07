@@ -7,7 +7,7 @@ function ListingResults({ listings }) {
   return (
     <div className={cs.listings}>
       {listings.map(listing => (
-        <Listing key={listing.key} listing={listing}></Listing>
+        <Listing key={listing.id} listing={listing} />
       ))}
     </div>
   )
