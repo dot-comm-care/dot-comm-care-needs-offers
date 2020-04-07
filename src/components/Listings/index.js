@@ -19,7 +19,6 @@ function parseName(name) {
   }
 
   const [first, ...rest] = name.trim().split(" ")
-  console.log(rest)
   const restInitials = rest.map(n => `${n[0].toUpperCase()}.`)
   return `${first} ${restInitials}`
 }
