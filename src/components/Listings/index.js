@@ -11,6 +11,7 @@ import {
 import useFilteredListings from "../../utils/useFilteredListings"
 import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
+import moment from "moment"
 
 /**
  * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
@@ -21,10 +22,8 @@ import cs from "./styles.module.css"
  */
 function parseRow(result, row, index) {
   const sharedCardProps = {
-    id: `listing-${index}`,
-    type: NEED_TYPES.FINANCIAL,
     name: row[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous",
-    createdAt: row[NEEDS_SHEET_COLUMN_INDICES.createdAt],
+    createdAt: moment(row[NEEDS_SHEET_COLUMN_INDICES.createdAt]),
     contactMethod: row[
       NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
     ]?.toLowerCase(),
@@ -32,20 +31,35 @@ function parseRow(result, row, index) {
   }
 
   if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
-    const parsedFinancialMetadata = {
-      // any data parsed out of the row that is needed by the financial card
-      frequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
-      timing: row[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming],
-      minFundingNeeded:
-        row[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed],
-      maxFundingNeeded:
-        row[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed],
-      fundingMethod: row[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod],
-    }
-
     result.push({
-      meta: parsedFinancialMetadata,
       ...sharedCardProps,
+      id: `listing-${index}-financial`,
+      type: NEED_TYPES.FINANCIAL,
+      meta: {
+        // any data parsed out of the row that is needed by the financial card
+        frequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
+        timing: row[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming],
+        minFundingNeeded:
+          row[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed],
+        maxFundingNeeded:
+          row[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed],
+        fundingMethod: row[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod],
+      },
+    })
+  }
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed]) {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-supplies`,
+      type: NEED_TYPES.SUPPLIES,
+      meta: {
+        frequency: row[NEEDS_SHEET_COLUMN_INDICES.supplies_needFrequency],
+        timing: row[NEEDS_SHEET_COLUMN_INDICES.supplies_needTiming],
+        details: row[NEEDS_SHEET_COLUMN_INDICES.supplies_details],
+        neighborhood: row[NEEDS_SHEET_COLUMN_INDICES.supplies_neighborhood],
+        store: row[NEEDS_SHEET_COLUMN_INDICES.supplies_store],
+        shoppingList: row[NEEDS_SHEET_COLUMN_INDICES.supplies_shoppingList],
+      },
     })
   }
 
@@ -79,6 +93,7 @@ const Listings =
         .getSheet(NEEDS_SHEET_NAME)
         .getData()
         .reduce(parseRow, [])
+        .sort((a, b) => b.createdAt.diff(a.createdAt)) // sort newest -> oldest
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
