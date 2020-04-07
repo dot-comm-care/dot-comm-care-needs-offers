@@ -1,84 +1,39 @@
 import React from "react"
 import moment from "moment"
+import startCase from "lodash.startcase"
 
 import { NEED_TYPES } from "../../utils/listingUtils"
 import ListingActions from "./ListingActions"
 import cs from "./styles.module.css"
 
-const FinancialNeedCard = ({
-  frequency,
-  timing,
-  minFundingNeeded,
-  maxFundingNeeded,
-  fundingMethod,
-}) => (
-  <table>
-    <tbody>
-      <tr>
-        <td>Frequency:</td>
-        <td>{frequency}</td>
-      </tr>
-      <tr>
-        <td>Timing:</td>
-        <td>{timing}</td>
-      </tr>
-      <tr>
-        <td>Funding Needed:</td>
-        <td>
-          ${minFundingNeeded} - ${maxFundingNeeded}
-        </td>
-      </tr>
-      <tr>
-        <td>Preferred Method(s):</td>
-        <td>{fundingMethod}</td>
-      </tr>
-    </tbody>
-  </table>
+const renderRow = (name, value) => {
+  return (
+    <div className={cs.row}>
+      <span className={cs.rowName}>{startCase(name)}:</span>
+      <span className={cs.rowValue}>{value}</span>
+    </div>
+  )
+}
+
+const FinancialContent = ({ minFundingNeeded, maxFundingNeeded, ...props }) => (
+  <div className={cs.content}>
+    {Object.keys(props).map(propKey => renderRow(propKey, props[propKey]))}
+    {renderRow(
+      "Funding Needed:",
+      `$${minFundingNeeded} - $${maxFundingNeeded}`
+    )}
+  </div>
 )
 
-const SuppliesNeedCard = ({
-  frequency,
-  timing,
-  details,
-  neighborhood,
-  store,
-  shoppingList,
-}) => (
-  <table>
-    <tbody>
-      <tr>
-        <td>Frequency:</td>
-        <td>{frequency}</td>
-      </tr>
-      <tr>
-        <td>Timing:</td>
-        <td>{timing}</td>
-      </tr>
-      <tr>
-        <td>Neighborhood:</td>
-        <td>{neighborhood || "N/A"}</td>
-      </tr>
-      <tr>
-        <td>Store:</td>
-        <td>{store || "N/A"}</td>
-      </tr>
-      {details && (
-        <tr>
-          <td>Details:</td>
-          <td>{details}</td>
-        </tr>
-      )}
-      <tr>
-        <td>Shopping List:</td>
-        <td>{shoppingList || "N/A"}</td>
-      </tr>
-    </tbody>
-  </table>
+const SuppliesContent = props => (
+  <div className={cs.content}>
+    {Object.keys(props).map(propKey => renderRow(propKey, props[propKey]))}
+  </div>
 )
 
-const cardNeedTypesMap = {
-  [NEED_TYPES.FINANCIAL]: FinancialNeedCard,
-  [NEED_TYPES.SUPPLIES]: SuppliesNeedCard,
+const componentTypeMap = {
+  [NEED_TYPES.FINANCIAL]: FinancialContent,
+  [NEED_TYPES.SUPPLIES]: SuppliesContent,
 }
 
 export default ({ listing }) => {
@@ -87,8 +42,8 @@ export default ({ listing }) => {
   console.log(type)
 
   // create separate need cards for various needs within the same row
-  let Card = cardNeedTypesMap[type]
-  if (!Card) {
+  let ContentComponent = componentTypeMap[type]
+  if (!ContentComponent) {
     throw new Error(`Unsupported need type ${type}`)
   }
 
@@ -102,9 +57,7 @@ export default ({ listing }) => {
           </div>
         </div>
       </div>
-      <div className={cs.listingBody}>
-        <Card {...meta} />
-      </div>
+      <ContentComponent {...meta} />
       <ListingActions contactMethod={contactMethod} type={type} />
     </article>
   )
