@@ -36,7 +36,7 @@ function parseRow(result, row, index) {
       // any data parsed out of the row that is needed by the financial card
       frequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
       timing: row[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming],
-      minfundingNeeded:
+      minFundingNeeded:
         row[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed],
       maxFundingNeeded:
         row[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed],

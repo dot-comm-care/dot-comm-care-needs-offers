@@ -43,8 +43,6 @@ const cardNeedTypesMap = {
 export default ({ listing }) => {
   const { type, name, createdAt, contactMethod, meta } = listing
 
-  console.log(meta)
-
   // create separate need cards for various needs within the same row
   let Card = cardNeedTypesMap[type]
   if (!Card) {
