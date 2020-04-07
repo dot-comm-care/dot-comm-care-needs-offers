@@ -1,3 +1,9 @@
 .page {
   padding: 1rem 4rem;
 }
+
+@media screen and (max-width: 400px) {
+  .page {
+    padding: 1rem 1.4rem;
+  }
+}

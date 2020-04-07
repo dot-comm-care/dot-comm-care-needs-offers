@@ -1,19 +1,9 @@
 .listing {
   padding: 1rem 2rem;
-  display: flex;
-  flex-direction: column;
   border: 1px solid #bbb;
   border-radius: 1rem;
   width: 100%;
   margin: 1.5rem 0;
-}
-
-.listingBody {
-  flex: 1;
-}
-
-.listingBody p {
-  margin-bottom: 1rem;
 }
 
 .listing .title {
@@ -32,11 +22,6 @@
   font-size: 1.2rem;
 }
 
-.listing .organizationLogo {
-  max-height: 4rem;
-  max-width: 12rem;
-}
-
 .listing .actions {
   display: flex;
   align-items: center;
@@ -44,12 +29,38 @@
   flex-direction: row-reverse;
 }
 
-.location {
-  display: flex;
-  align-items: center;
+.content {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 2rem;
 }
 
-.locationPin {
-  height: 1.4rem;
-  margin-right: 0.8rem;
+.row {
+  display: table-row;
+  border-bottom: 1px solid #eee;
+  height: 4rem;
+}
+
+.row > * {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+@media screen and (max-width: 400px) {
+  .content,
+  .row,
+  .row > * {
+    display: block;
+  }
+
+  .row {
+    height: auto;
+    padding: 1rem 0;
+  }
+
+  .rowName {
+    font-weight: bold;
+  }
 }
