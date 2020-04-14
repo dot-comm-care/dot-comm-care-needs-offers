@@ -19,8 +19,20 @@ function parseName(name) {
   }
 
   const [first, ...rest] = name.trim().split(" ")
-  const restInitials = rest.map(n => `${n[0].toUpperCase()}.`)
+  const restInitials = rest.map((n) => `${n[0].toUpperCase()}.`)
   return `${first} ${restInitials}`
+}
+
+function mapMeta(keys, row) {
+  return {
+    ...Object.keys(keys).reduce(
+      (curr, key) => ({
+        ...curr,
+        [key]: row[keys[key]],
+      }),
+      {}
+    ),
+  }
 }
 
 /**
@@ -40,7 +52,7 @@ function parseRow(result, row, index) {
     contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
   }
 
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed] == "Yes") {
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed] === "Yes") {
     result.push({
       ...sharedCardProps,
       id: `listing-${index}-financial`,
@@ -57,7 +69,7 @@ function parseRow(result, row, index) {
       },
     })
   }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed] == "Yes") {
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed] === "Yes") {
     result.push({
       ...sharedCardProps,
       id: `listing-${index}-supplies`,
@@ -72,7 +84,7 @@ function parseRow(result, row, index) {
       },
     })
   }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isTransportationNeed] == "Yes") {
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isTransportationNeed] === "Yes") {
     result.push({
       ...sharedCardProps,
       id: `listing-${index}-transportation`,
@@ -85,6 +97,15 @@ function parseRow(result, row, index) {
           row[NEEDS_SHEET_COLUMN_INDICES.transportation_neighborhood],
         comments: row[NEEDS_SHEET_COLUMN_INDICES.transportation_comments],
       },
+    })
+  }
+
+  if (row[NEEDS_SHEET_COLUMN_INDICES.housing.id] === "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-housing`,
+      type: NEED_TYPES.HOUSING,
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.housing.meta, row),
     })
   }
 
@@ -105,7 +126,7 @@ function filterReducer(state, action) {
 
 const Listings =
   typeof window !== `undefined` &&
-  connectToSpreadsheet(props => {
+  connectToSpreadsheet((props) => {
     const [filters, dispatch] = useReducer(filterReducer, {
       typeFilter: null,
       searchTerm: "",
@@ -114,9 +135,8 @@ const Listings =
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
     const listings = useMemo(() => {
-      return props
-        .getSheet(NEEDS_SHEET_NAME)
-        .getData()
+      const result = props.getSheet(NEEDS_SHEET_NAME).getData()
+      return result
         .reduce(parseRow, [])
         .sort((a, b) => b.createdAt.diff(a.createdAt)) // sort newest -> oldest
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,12 +154,12 @@ const Listings =
             <input
               type="text"
               placeholder="Search"
-              onChange={e =>
+              onChange={(e) =>
                 dispatch({ type: "setSearchTerm", value: e.target.value })
               }
               className={classnames(cs.filter)}
             ></input>
-            {Object.values(NEED_TYPES).map(filter => (
+            {Object.values(NEED_TYPES).map((filter) => (
               <button
                 key={filter}
                 className={classnames(cs.filter, {

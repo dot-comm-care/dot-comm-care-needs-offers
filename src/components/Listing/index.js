@@ -8,7 +8,7 @@ import cs from "./styles.module.css"
 
 const renderRow = (name, value) => {
   return (
-    <div className={cs.row}>
+    <div className={cs.row} key={name}>
       <span className={cs.rowName}>{startCase(name)}:</span>
       <span className={cs.rowValue}>{value}</span>
     </div>
@@ -17,7 +17,7 @@ const renderRow = (name, value) => {
 
 const FinancialContent = ({ minFundingNeeded, maxFundingNeeded, ...props }) => (
   <div className={cs.content}>
-    {Object.keys(props).map(propKey => renderRow(propKey, props[propKey]))}
+    {Object.keys(props).map((propKey) => renderRow(propKey, props[propKey]))}
     {renderRow(
       "Funding Needed:",
       `$${minFundingNeeded} - $${maxFundingNeeded}`
@@ -25,9 +25,9 @@ const FinancialContent = ({ minFundingNeeded, maxFundingNeeded, ...props }) => (
   </div>
 )
 
-const DefaultContent = props => (
+const DefaultContent = (props) => (
   <div className={cs.content}>
-    {Object.keys(props).map(propKey => renderRow(propKey, props[propKey]))}
+    {Object.keys(props).map((propKey) => renderRow(propKey, props[propKey]))}
   </div>
 )
 
