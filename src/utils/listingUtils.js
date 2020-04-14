@@ -20,13 +20,18 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
   financial_fundingMethod: 16,
 
   // SUPPIES/ERRANDS NEED
-  isSuppliesNeed: 18,
-  supplies_needFrequency: 19,
-  supplies_needTiming: 21,
-  supplies_details: 22,
-  supplies_neighborhood: 23,
-  supplies_store: 24,
-  supplies_shoppingList: 25,
+  supplies: {
+    id: 18,
+    meta: {
+      needFrequency: 19,
+      needTiming: 20,
+      costCoverage: 21,
+      details: 22,
+      neighborhood: 23,
+      store: 24,
+      shoppingList: 25,
+    },
+  },
 
   // TRANSPORTATION
   isTransportationNeed: 26,

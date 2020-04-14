@@ -69,21 +69,15 @@ function parseRow(result, row, index) {
       },
     })
   }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed] === "Yes") {
+  if (row[NEEDS_SHEET_COLUMN_INDICES.supplies.id] === "Yes") {
     result.push({
       ...sharedCardProps,
       id: `listing-${index}-supplies`,
       type: NEED_TYPES.SUPPLIES,
-      meta: {
-        frequency: row[NEEDS_SHEET_COLUMN_INDICES.supplies_needFrequency],
-        timing: row[NEEDS_SHEET_COLUMN_INDICES.supplies_needTiming],
-        details: row[NEEDS_SHEET_COLUMN_INDICES.supplies_details],
-        neighborhood: row[NEEDS_SHEET_COLUMN_INDICES.supplies_neighborhood],
-        store: row[NEEDS_SHEET_COLUMN_INDICES.supplies_store],
-        shoppingList: row[NEEDS_SHEET_COLUMN_INDICES.supplies_shoppingList],
-      },
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.supplies.meta, row),
     })
   }
+
   if (row[NEEDS_SHEET_COLUMN_INDICES.isTransportationNeed] === "Yes") {
     result.push({
       ...sharedCardProps,
