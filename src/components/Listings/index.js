@@ -103,6 +103,15 @@ function parseRow(result, row, index) {
     })
   }
 
+  if (row[NEEDS_SHEET_COLUMN_INDICES.childcarePetcare.id] === "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-childcare-petcare`,
+      type: NEED_TYPES.CHILDCARE_PETCARE,
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.childcarePetcare.meta, row),
+    })
+  }
+
   return result
 }
 

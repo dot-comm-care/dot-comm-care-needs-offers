@@ -61,6 +61,23 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
       storageComments: 46,
     },
   },
+
+  childcarePetcare: {
+    id: 47,
+    meta: {
+      ageAndNumberOfKids: 48,
+      typeOfRequest: 49,
+      typeOfActivities: 50,
+      needFrequency: 51,
+      needTiming: 52,
+      comments: 53,
+      kindOfPets: 54,
+      supportType: 55,
+      petNeedFrequency: 56,
+      petNeedTiming: 57,
+      petComments: 58,
+    },
+  },
 }
 
 export const NEED_TYPES = {
@@ -68,4 +85,5 @@ export const NEED_TYPES = {
   SUPPLIES: "Supplies",
   TRANSPORTATION: "Transportation",
   HOUSING: "Housing",
+  CHILDCARE_PETCARE: "Childcare/Petcare",
 }
