@@ -78,6 +78,17 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
       petComments: 58,
     },
   },
+
+  emotionalSupport: {
+    id: 59,
+    meta: {
+      supportType: 60,
+      resourceSupport: 61,
+      resourceSupportDetails: 62,
+      otherCommunitySupport: 63,
+      anythingToShare: 64,
+    },
+  },
 }
 
 export const NEED_TYPES = {
@@ -86,4 +97,5 @@ export const NEED_TYPES = {
   TRANSPORTATION: "Transportation",
   HOUSING: "Housing",
   CHILDCARE_PETCARE: "Childcare/Petcare",
+  EMOTIONAL_SUPPORT: "Emotional Support",
 }

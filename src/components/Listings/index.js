@@ -112,6 +112,15 @@ function parseRow(result, row, index) {
     })
   }
 
+  if (row[NEEDS_SHEET_COLUMN_INDICES.emotionalSupport.id] === "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-emotional-support`,
+      type: NEED_TYPES.EMOTIONAL_SUPPORT,
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.emotionalSupport.meta, row),
+    })
+  }
+
   return result
 }
 
