@@ -25,7 +25,7 @@ const FinancialContent = ({ minFundingNeeded, maxFundingNeeded, ...props }) => (
   </div>
 )
 
-const SuppliesContent = props => (
+const DefaultContent = props => (
   <div className={cs.content}>
     {Object.keys(props).map(propKey => renderRow(propKey, props[propKey]))}
   </div>
@@ -33,19 +33,13 @@ const SuppliesContent = props => (
 
 const componentTypeMap = {
   [NEED_TYPES.FINANCIAL]: FinancialContent,
-  [NEED_TYPES.SUPPLIES]: SuppliesContent,
 }
 
 export default ({ listing }) => {
   const { type, name, createdAt, contactMethod, meta } = listing
 
-  console.log(type)
-
   // create separate need cards for various needs within the same row
-  let ContentComponent = componentTypeMap[type]
-  if (!ContentComponent) {
-    throw new Error(`Unsupported need type ${type}`)
-  }
+  let ContentComponent = componentTypeMap[type] || DefaultContent
 
   return (
     <article className={cs.listing}>

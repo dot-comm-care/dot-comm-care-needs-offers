@@ -27,9 +27,18 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
   supplies_neighborhood: 24,
   supplies_store: 25,
   supplies_shoppingList: 26,
+
+  // TRANSPORTATION
+  isTransportationNeed: 27,
+  transportation_needFrequency: 28,
+  transporation_needTiming: 29,
+  transportation_details: 30,
+  transportation_neighborhood: 31,
+  transportation_comments: 32,
 }
 
 export const NEED_TYPES = {
   FINANCIAL: "Financial",
   SUPPLIES: "Supplies",
+  TRANSPORTATION: "Transportation",
 }

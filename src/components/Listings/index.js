@@ -30,7 +30,7 @@ function parseRow(result, row, index) {
     contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
   }
 
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed]) {
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed] == "Yes") {
     result.push({
       ...sharedCardProps,
       id: `listing-${index}-financial`,
@@ -47,7 +47,7 @@ function parseRow(result, row, index) {
       },
     })
   }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed]) {
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed] == "Yes") {
     result.push({
       ...sharedCardProps,
       id: `listing-${index}-supplies`,
@@ -59,6 +59,21 @@ function parseRow(result, row, index) {
         neighborhood: row[NEEDS_SHEET_COLUMN_INDICES.supplies_neighborhood],
         store: row[NEEDS_SHEET_COLUMN_INDICES.supplies_store],
         shoppingList: row[NEEDS_SHEET_COLUMN_INDICES.supplies_shoppingList],
+      },
+    })
+  }
+  if (row[NEEDS_SHEET_COLUMN_INDICES.isTransportationNeed] == "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-transportation`,
+      type: NEED_TYPES.TRANSPORTATION,
+      meta: {
+        frequency: row[NEEDS_SHEET_COLUMN_INDICES.transportation_needFrequency],
+        timing: row[NEEDS_SHEET_COLUMN_INDICES.transportation_needTiming],
+        details: row[NEEDS_SHEET_COLUMN_INDICES.transportation_details],
+        neighborhood:
+          row[NEEDS_SHEET_COLUMN_INDICES.transportation_neighborhood],
+        comments: row[NEEDS_SHEET_COLUMN_INDICES.transportation_comments],
       },
     })
   }
