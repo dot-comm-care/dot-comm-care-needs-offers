@@ -13,6 +13,16 @@ import ListingResults from "../ListingResults"
 import cs from "./styles.module.css"
 import moment from "moment"
 
+function parseName(name) {
+  if (!name) {
+    return "Anonymous"
+  }
+
+  const [first, ...rest] = name.trim().split(" ")
+  const restInitials = rest.map(n => `${n[0].toUpperCase()}.`)
+  return `${first} ${restInitials}`
+}
+
 /**
  * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
  * TODO: implement all types and parse metadata for each card
@@ -22,7 +32,7 @@ import moment from "moment"
  */
 function parseRow(result, row, index) {
   const sharedCardProps = {
-    name: row[NEEDS_SHEET_COLUMN_INDICES.name] || "Anonymous",
+    name: parseName(row[NEEDS_SHEET_COLUMN_INDICES.name]),
     createdAt: moment(row[NEEDS_SHEET_COLUMN_INDICES.createdAt]),
     contactMethod: row[
       NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
