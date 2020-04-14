@@ -160,7 +160,7 @@ const Listings =
       <div>
         <div className={cs.actions}>
           <Link to="/new">
-            <button>New Offer</button>
+            <button>New Request</button>
           </Link>
           <div className={cs.filters}>
             <input

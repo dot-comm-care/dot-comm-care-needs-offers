@@ -13,7 +13,7 @@ export default () => {
         />
         <p>mutualaidmamas.com</p>
       </a>
-      <h1 className={cs.headerTitle}>Offers List</h1>
+      <h1 className={cs.headerTitle}>Requests List</h1>
     </header>
   )
 }
