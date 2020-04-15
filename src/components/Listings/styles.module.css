@@ -6,19 +6,9 @@
   flex-wrap: wrap;
 }
 
-@media only screen and (max-width: 50rem) {
-  .actions {
-    display: block;
-  }
-
-  .actions > * {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-}
-
 .filters {
   flex: 1;
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -38,4 +28,38 @@
   border: 0.2rem #e39774 solid;
   color: #e39774;
   pointer-events: none;
+}
+
+
+
+@media only screen and (max-width: 411px) {
+    .actions {
+        display: block;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .actions a button {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        align-self: center;
+        width: 100%;
+    }
+
+    .actions > * {
+        flex: 1;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .filters {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .filter {
+        margin: .2rem;
+        width: 80%;
+    }
 }
