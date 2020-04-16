@@ -35,6 +35,17 @@ function mapMeta(keys, row) {
   }
 }
 
+function makeCard(type, index, row, sharedCardProps, result) {
+  if (row[NEEDS_SHEET_COLUMN_INDICES[type].id] === "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-${type}`,
+      type,
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES[type].meta, row),
+    })
+  }
+}
+
 /**
  * A reducer which parses a row from the sheet and adds the needs data to the array of all needs
  * TODO: implement all types and parse metadata for each card
@@ -44,91 +55,21 @@ function mapMeta(keys, row) {
  */
 function parseRow(result, row, index) {
   const sharedCardProps = {
-    name: parseName(row[NEEDS_SHEET_COLUMN_INDICES.name]),
-    createdAt: moment(row[NEEDS_SHEET_COLUMN_INDICES.createdAt]),
+    name: parseName(row[NEEDS_SHEET_COLUMN_INDICES.shared.name]),
+    createdAt: moment(
+      row[NEEDS_SHEET_COLUMN_INDICES.shared.createdAt],
+      "MM-DD-YYYY HH:mm:ss"
+    ),
     contactMethod: row[
-      NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
+      NEEDS_SHEET_COLUMN_INDICES.shared.preferredContactMethod
     ]?.toLowerCase(),
-    contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
+    contact: row[NEEDS_SHEET_COLUMN_INDICES.shared.contact],
   }
 
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-financial`,
-      type: NEED_TYPES.FINANCIAL,
-      meta: {
-        // any data parsed out of the row that is needed by the financial card
-        frequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
-        timing: row[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming],
-        minFundingNeeded:
-          row[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed],
-        maxFundingNeeded:
-          row[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed],
-        fundingMethod: row[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod],
-      },
-    })
-  }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.supplies.id] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-supplies`,
-      type: NEED_TYPES.SUPPLIES,
-      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.supplies.meta, row),
-    })
-  }
+  Object.values(NEED_TYPES).forEach((type) =>
+    makeCard(type, index, row, sharedCardProps, result)
+  )
 
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isTransportationNeed] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-transportation`,
-      type: NEED_TYPES.TRANSPORTATION,
-      meta: {
-        frequency: row[NEEDS_SHEET_COLUMN_INDICES.transportation_needFrequency],
-        timing: row[NEEDS_SHEET_COLUMN_INDICES.transportation_needTiming],
-        details: row[NEEDS_SHEET_COLUMN_INDICES.transportation_details],
-        neighborhood:
-          row[NEEDS_SHEET_COLUMN_INDICES.transportation_neighborhood],
-        comments: row[NEEDS_SHEET_COLUMN_INDICES.transportation_comments],
-      },
-    })
-  }
-
-  if (row[NEEDS_SHEET_COLUMN_INDICES.housing.id] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-housing`,
-      type: NEED_TYPES.HOUSING,
-      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.housing.meta, row),
-    })
-  }
-
-  if (row[NEEDS_SHEET_COLUMN_INDICES.childcarePetcare.id] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-childcare-petcare`,
-      type: NEED_TYPES.CHILDCARE_PETCARE,
-      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.childcarePetcare.meta, row),
-    })
-  }
-
-  if (row[NEEDS_SHEET_COLUMN_INDICES.emotionalSupport.id] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-emotional-support`,
-      type: NEED_TYPES.EMOTIONAL_SUPPORT,
-      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.emotionalSupport.meta, row),
-    })
-  }
-
-  if (row[NEEDS_SHEET_COLUMN_INDICES.resourceSupport.id] === "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-resource-support`,
-      type: NEED_TYPES.RESOURCE_SUPPORT,
-      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.resourceSupport.meta, row),
-    })
-  }
   return result
 }
 

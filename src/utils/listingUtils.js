@@ -1,26 +1,40 @@
 export const NEEDS_SHEET_NAME = "Public needs responses"
-
+export const NEED_TYPES = {
+  FINANCIAL: "Financial",
+  SUPPLIES: "Supplies",
+  TRANSPORTATION: "Transportation",
+  HOUSING: "Housing",
+  CHILDCARE_PETCARE: "Childcare/Petcare",
+  EMOTIONAL_SUPPORT: "Emotional Support",
+  RESOURCE_SUPPORT: "Resource Support",
+}
 export const NEEDS_SHEET_COLUMN_INDICES = {
-  createdAt: 0,
-  onBehalfOf: 1,
-  name: 2,
-  pronouns: 3,
-  location: 4,
-  preferredContactMethod: 5,
-  contact: 6,
-  interestedInConnecting: 7,
-  neighborhoodName: 8,
+  shared: {
+    createdAt: 0,
+    onBehalfOf: 1,
+    name: 2,
+    pronouns: 3,
+    location: 4,
+    preferredContactMethod: 5,
+    contact: 6,
+    interestedInConnecting: 7,
+    neighborhoodName: 8,
+  },
 
   // FINANCIAL NEED
-  isFinancialNeed: 9,
-  financial_needFrequency: 10,
-  financial_needTiming: 11,
-  financial_minFundingNeed: 14,
-  financial_maxFundingNeed: 15,
-  financial_fundingMethod: 16,
+  [NEED_TYPES.FINANCIAL]: {
+    id: 9,
+    meta: {
+      needFrequency: 10,
+      needTiming: 11,
+      minFundingNeed: 14,
+      maxFundingNeed: 15,
+      fundingMethod: 16,
+    },
+  },
 
   // SUPPIES/ERRANDS NEED
-  supplies: {
+  [NEED_TYPES.SUPPLIES]: {
     id: 18,
     meta: {
       needFrequency: 19,
@@ -34,15 +48,19 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
   },
 
   // TRANSPORTATION
-  isTransportationNeed: 26,
-  transportation_needFrequency: 27,
-  transporation_needTiming: 28,
-  transportation_details: 29,
-  transportation_neighborhood: 30,
-  transportation_comments: 31,
+  [NEED_TYPES.TRANSPORTATION]: {
+    id: 26,
+    meta: {
+      needFrequency: 27,
+      needTiming: 28,
+      details: 29,
+      neighborhood: 30,
+      comments: 31,
+    },
+  },
 
   // HOUSING
-  housing: {
+  [NEED_TYPES.HOUSING]: {
     id: 32,
     meta: {
       whatKindOfSpace: 33,
@@ -62,7 +80,7 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
     },
   },
 
-  childcarePetcare: {
+  [NEED_TYPES.CHILDCARE_PETCARE]: {
     id: 47,
     meta: {
       ageAndNumberOfKids: 48,
@@ -79,14 +97,14 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
     },
   },
 
-  emotionalSupport: {
+  [NEED_TYPES.EMOTIONAL_SUPPORT]: {
     id: 59,
     meta: {
       supportType: 60,
     },
   },
 
-  resourceSupport: {
+  [NEED_TYPES.RESOURCE_SUPPORT]: {
     id: 61,
     meta: {
       resourceSupportDetails: 62,
@@ -94,14 +112,4 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
       anythingToShare: 64,
     },
   },
-}
-
-export const NEED_TYPES = {
-  FINANCIAL: "Financial",
-  SUPPLIES: "Supplies",
-  TRANSPORTATION: "Transportation",
-  HOUSING: "Housing",
-  CHILDCARE_PETCARE: "Childcare/Petcare",
-  EMOTIONAL_SUPPORT: "Emotional Support",
-  RESOURCE_SUPPORT: "Resource Support",
 }

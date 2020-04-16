@@ -8,20 +8,20 @@ import cs from "./styles.module.css"
 
 const renderRow = (name, value) => {
   return (
-    <div className={cs.row} key={name}>
-      <span className={cs.rowName}>{startCase(name)}:</span>
-      <span className={cs.rowValue}>{value}</span>
-    </div>
+    value && (
+      <div className={cs.row} key={name}>
+        <span className={cs.rowName}>{startCase(name)}:</span>
+        <span className={cs.rowValue}>{value}</span>
+      </div>
+    )
   )
 }
 
-const FinancialContent = ({ minFundingNeeded, maxFundingNeeded, ...props }) => (
+const FinancialContent = ({ minFundingNeed, maxFundingNeed, ...props }) => (
   <div className={cs.content}>
     {Object.keys(props).map((propKey) => renderRow(propKey, props[propKey]))}
-    {renderRow(
-      "Funding Needed:",
-      `$${minFundingNeeded} - $${maxFundingNeeded}`
-    )}
+    {(minFundingNeed || maxFundingNeed) &&
+      renderRow("Funding Needed:", `$${minFundingNeed} - $${maxFundingNeed}`)}
   </div>
 )
 
@@ -30,6 +30,8 @@ const DefaultContent = (props) => (
     {Object.keys(props).map((propKey) => renderRow(propKey, props[propKey]))}
   </div>
 )
+
+const Tag = ({ children }) => <span className={cs.tag}>{children}</span>
 
 const componentTypeMap = {
   [NEED_TYPES.FINANCIAL]: FinancialContent,
@@ -49,6 +51,7 @@ export default ({ listing }) => {
           <div className={cs.date}>
             Posted on {moment(createdAt).format("LL")}
           </div>
+          <Tag>{type}</Tag>
         </div>
       </div>
       <ContentComponent {...meta} />
