@@ -106,41 +106,41 @@ const Listings =
     const filteredListings = useFilteredListings(filters, listings)
 
     return (
-        <div>
-            <div className={cs.actionContainer}>
-                <div className={cs.sidebar}>
-                    <input
-                        className={cs.searchBox}
-                        type="text"
-                        placeholder="Search"
-                        onChange={(e) =>
-                            dispatch({ type: "setSearchTerm", value: e.target.value })
-                        }>
-                    </input>
+      <div>
+        <div className={cs.actionContainer}>
+          <div className={cs.sidebar}>
+            <input
+              className={cs.searchBox}
+              type="text"
+              placeholder="Search"
+              onChange={(e) =>
+                dispatch({ type: "setSearchTerm", value: e.target.value })
+              }
+            ></input>
 
-                    <Link to="/new">
-                        <button className={cs.newRequestBtn}>New Request</button>
-                    </Link>
-                </div>
-                <div className={cs.filters}>
-                    {Object.values(NEED_TYPES).map((filter) => (
-                        <button
-                            key={filter}
-                            className={classnames(cs.filter, {
-                                [cs.selectedFilter]: filter === filters.typeFilter,
-                                [cs.notSelectedFilter]: filter !== filters.typeFilter,
-                            })}
-                            onClick={() => {
-                                dispatch({ type: "setTypeFilter", value: filter })
-                            }}
-                        >
-                            {filter}
-                        </button>
-                    ))}
-                </div>
-            </div>
-            <ListingResults listings={filteredListings} />
+            <Link to="/new">
+              <button className={cs.newRequestBtn}>New Request</button>
+            </Link>
+          </div>
+          <div className={cs.filters}>
+            {Object.values(NEED_TYPES).map((filter) => (
+              <button
+                key={filter}
+                className={classnames(cs.filter, {
+                  [cs.selectedFilter]: filter === filters.typeFilter,
+                  [cs.notSelectedFilter]: filter !== filters.typeFilter,
+                })}
+                onClick={() => {
+                  dispatch({ type: "setTypeFilter", value: filter })
+                }}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
         </div>
+        <ListingResults listings={filteredListings} />
+      </div>
     )
   })
 
