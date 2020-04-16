@@ -83,7 +83,12 @@ export const NEEDS_SHEET_COLUMN_INDICES = {
     id: 59,
     meta: {
       supportType: 60,
-      resourceSupport: 61,
+    },
+  },
+
+  resourceSupport: {
+    id: 61,
+    meta: {
       resourceSupportDetails: 62,
       otherCommunitySupport: 63,
       anythingToShare: 64,
@@ -98,4 +103,5 @@ export const NEED_TYPES = {
   HOUSING: "Housing",
   CHILDCARE_PETCARE: "Childcare/Petcare",
   EMOTIONAL_SUPPORT: "Emotional Support",
+  RESOURCE_SUPPORT: "Resource Support",
 }

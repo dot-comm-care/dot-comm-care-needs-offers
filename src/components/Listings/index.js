@@ -121,6 +121,14 @@ function parseRow(result, row, index) {
     })
   }
 
+  if (row[NEEDS_SHEET_COLUMN_INDICES.resourceSupport.id] === "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-resource-support`,
+      type: NEED_TYPES.RESOURCE_SUPPORT,
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES.resourceSupport.meta, row),
+    })
+  }
   return result
 }
 
