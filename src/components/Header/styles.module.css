@@ -13,10 +13,12 @@
 .logo {
   height: 5rem;
   justify-self: flex-start;
+  align-self: flex-start;
 }
 
 .headerTitle {
   justify-self: flex-end;
+  align-self: flex-start;
 }
 
 @supports (display: grid) {
