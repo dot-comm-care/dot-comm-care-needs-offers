@@ -19,8 +19,31 @@ function parseName(name) {
   }
 
   const [first, ...rest] = name.trim().split(" ")
-  const restInitials = rest.map(n => `${n[0].toUpperCase()}.`)
+  const restInitials = rest.map((n) => `${n[0].toUpperCase()}.`)
   return `${first} ${restInitials}`
+}
+
+function mapMeta(keys, row) {
+  return {
+    ...Object.keys(keys).reduce(
+      (curr, key) => ({
+        ...curr,
+        [key]: row[keys[key]],
+      }),
+      {}
+    ),
+  }
+}
+
+function makeCard(type, index, row, sharedCardProps, result) {
+  if (row[NEEDS_SHEET_COLUMN_INDICES[type].id] === "Yes") {
+    result.push({
+      ...sharedCardProps,
+      id: `listing-${index}-${type}`,
+      type,
+      meta: mapMeta(NEEDS_SHEET_COLUMN_INDICES[type].meta, row),
+    })
+  }
 }
 
 /**
@@ -32,61 +55,20 @@ function parseName(name) {
  */
 function parseRow(result, row, index) {
   const sharedCardProps = {
-    name: parseName(row[NEEDS_SHEET_COLUMN_INDICES.name]),
-    createdAt: moment(row[NEEDS_SHEET_COLUMN_INDICES.createdAt]),
+    name: parseName(row[NEEDS_SHEET_COLUMN_INDICES.shared.name]),
+    createdAt: moment(
+      row[NEEDS_SHEET_COLUMN_INDICES.shared.createdAt],
+      "MM-DD-YYYY HH:mm:ss"
+    ),
     contactMethod: row[
-      NEEDS_SHEET_COLUMN_INDICES.preferredContactMethod
+      NEEDS_SHEET_COLUMN_INDICES.shared.preferredContactMethod
     ]?.toLowerCase(),
-    contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
+    contact: row[NEEDS_SHEET_COLUMN_INDICES.shared.contact],
   }
 
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isFinancialNeed] == "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-financial`,
-      type: NEED_TYPES.FINANCIAL,
-      meta: {
-        // any data parsed out of the row that is needed by the financial card
-        frequency: row[NEEDS_SHEET_COLUMN_INDICES.financial_needFrequency],
-        timing: row[NEEDS_SHEET_COLUMN_INDICES.financial_needTiming],
-        minFundingNeeded:
-          row[NEEDS_SHEET_COLUMN_INDICES.financial_minFundingNeed],
-        maxFundingNeeded:
-          row[NEEDS_SHEET_COLUMN_INDICES.financial_maxFundingNeed],
-        fundingMethod: row[NEEDS_SHEET_COLUMN_INDICES.financial_fundingMethod],
-      },
-    })
-  }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isSuppliesNeed] == "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-supplies`,
-      type: NEED_TYPES.SUPPLIES,
-      meta: {
-        frequency: row[NEEDS_SHEET_COLUMN_INDICES.supplies_needFrequency],
-        timing: row[NEEDS_SHEET_COLUMN_INDICES.supplies_needTiming],
-        details: row[NEEDS_SHEET_COLUMN_INDICES.supplies_details],
-        neighborhood: row[NEEDS_SHEET_COLUMN_INDICES.supplies_neighborhood],
-        store: row[NEEDS_SHEET_COLUMN_INDICES.supplies_store],
-        shoppingList: row[NEEDS_SHEET_COLUMN_INDICES.supplies_shoppingList],
-      },
-    })
-  }
-  if (row[NEEDS_SHEET_COLUMN_INDICES.isTransportationNeed] == "Yes") {
-    result.push({
-      ...sharedCardProps,
-      id: `listing-${index}-transportation`,
-      type: NEED_TYPES.TRANSPORTATION,
-      meta: {
-        frequency: row[NEEDS_SHEET_COLUMN_INDICES.transportation_needFrequency],
-        timing: row[NEEDS_SHEET_COLUMN_INDICES.transportation_needTiming],
-        details: row[NEEDS_SHEET_COLUMN_INDICES.transportation_details],
-        neighborhood:
-          row[NEEDS_SHEET_COLUMN_INDICES.transportation_neighborhood],
-        comments: row[NEEDS_SHEET_COLUMN_INDICES.transportation_comments],
-      },
-    })
-  }
+  Object.values(NEED_TYPES).forEach((type) =>
+    makeCard(type, index, row, sharedCardProps, result)
+  )
 
   return result
 }
@@ -105,7 +87,7 @@ function filterReducer(state, action) {
 
 const Listings =
   typeof window !== `undefined` &&
-  connectToSpreadsheet(props => {
+  connectToSpreadsheet((props) => {
     const [filters, dispatch] = useReducer(filterReducer, {
       typeFilter: null,
       searchTerm: "",
@@ -114,9 +96,8 @@ const Listings =
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
     const listings = useMemo(() => {
-      return props
-        .getSheet(NEEDS_SHEET_NAME)
-        .getData()
+      const result = props.getSheet(NEEDS_SHEET_NAME).getData()
+      return result
         .reduce(parseRow, [])
         .sort((a, b) => b.createdAt.diff(a.createdAt)) // sort newest -> oldest
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,18 +109,18 @@ const Listings =
       <div>
         <div className={cs.actions}>
           <Link to="/new">
-            <button>New Offer</button>
+            <button>New Request</button>
           </Link>
           <div className={cs.filters}>
             <input
               type="text"
               placeholder="Search"
-              onChange={e =>
+              onChange={(e) =>
                 dispatch({ type: "setSearchTerm", value: e.target.value })
               }
               className={classnames(cs.filter)}
             ></input>
-            {Object.values(NEED_TYPES).map(filter => (
+            {Object.values(NEED_TYPES).map((filter) => (
               <button
                 key={filter}
                 className={classnames(cs.filter, {

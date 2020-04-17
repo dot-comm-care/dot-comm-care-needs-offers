@@ -25,7 +25,7 @@ export default function ListingActions({ contactMethod, type }) {
   return (
     <div className={cs.actions}>
       <a href={mailto}>
-        <button className={cs.button}>Meet Need</button>
+        <button className={cs.button}>Meet Request</button>
       </a>
     </div>
   )
