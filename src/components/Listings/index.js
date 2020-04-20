@@ -19,7 +19,7 @@ function parseName(name) {
   }
 
   const [first, ...rest] = name.trim().split(" ")
-  const restInitials = rest.map((n) => `${n[0].toUpperCase()}.`)
+  const restInitials = rest.map(n => `${n[0].toUpperCase()}.`)
   return `${first} ${restInitials}`
 }
 
@@ -87,7 +87,7 @@ function filterReducer(state, action) {
 
 const Listings =
   typeof window !== `undefined` &&
-  connectToSpreadsheet((props) => {
+  connectToSpreadsheet(props => {
     const [filters, dispatch] = useReducer(filterReducer, {
       typeFilter: null,
       searchTerm: "",
@@ -107,20 +107,22 @@ const Listings =
 
     return (
       <div>
-        <div className={cs.actions}>
-          <Link to="/new">
-            <button>New Request</button>
-          </Link>
-          <div className={cs.filters}>
+        <div className={cs.actionContainer}>
+          <div className={cs.sidebar}>
+            <Link to="/new">
+              <button className={cs.newRequestBtn}>New Request</button>
+            </Link>
             <input
+              className={cs.searchBox}
               type="text"
               placeholder="Search"
-              onChange={(e) =>
+              onChange={e =>
                 dispatch({ type: "setSearchTerm", value: e.target.value })
               }
-              className={classnames(cs.filter)}
             ></input>
-            {Object.values(NEED_TYPES).map((filter) => (
+          </div>
+          <div className={cs.filters}>
+            {Object.values(NEED_TYPES).map(filter => (
               <button
                 key={filter}
                 className={classnames(cs.filter, {
