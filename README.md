@@ -1,5 +1,13 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/29558807-538f-4f7d-a6c9-2a384b11b623/deploy-status)](https://app.netlify.com/sites/elastic-euclid-09792e/deploys)
 
+## Sample `.env.development`
+```bash
+GATSBY_API_KEY=
+GATSBY_SPREADSHEET_ID=
+GATSBY_REQUEST_FORM_URL=
+GATSBY_CONTACT_EMAIL=
+```
+
 ## To run
 1. Ask in #tech-tasks for the `.env.development` file.
 1. Install `node` and `yarn`
