@@ -4,8 +4,8 @@ import { connectToSpreadsheet } from "react-google-sheet-connector"
 import classnames from "classnames"
 
 import {
-  NEEDS_SHEET_NAME,
-  NEED_TYPES,
+  NEEDS_OFFERS_SHEET_NAME,
+  FILTER_TYPES,
   NEEDS_SHEET_COLUMN_INDICES,
 } from "../../utils/listingUtils"
 import useFilteredListings from "../../utils/useFilteredListings"
@@ -54,21 +54,15 @@ function makeCard(type, index, row, sharedCardProps, result) {
  * @param {*} index
  */
 function parseRow(result, row, index) {
-  const sharedCardProps = {
-    name: parseName(row[NEEDS_SHEET_COLUMN_INDICES.shared.name]),
-    createdAt: moment(
-      row[NEEDS_SHEET_COLUMN_INDICES.shared.createdAt],
-      "MM-DD-YYYY HH:mm:ss"
-    ),
-    contactMethod: row[
-      NEEDS_SHEET_COLUMN_INDICES.shared.preferredContactMethod
-    ]?.toLowerCase(),
-    contact: row[NEEDS_SHEET_COLUMN_INDICES.shared.contact],
-  }
-
-  Object.values(NEED_TYPES).forEach((type) =>
-    makeCard(type, index, row, sharedCardProps, result)
-  )
+  result.push({
+    id: `listing-${index}`,
+    name: row[NEEDS_SHEET_COLUMN_INDICES.name],
+    contact: row[NEEDS_SHEET_COLUMN_INDICES.contact],
+    offers: row[NEEDS_SHEET_COLUMN_INDICES.offer] === undefined ? [] : row[NEEDS_SHEET_COLUMN_INDICES.offer].split(', '),
+    offerDetails: row[NEEDS_SHEET_COLUMN_INDICES.offerDetails],
+    needs: row[NEEDS_SHEET_COLUMN_INDICES.need] === undefined ? [] : row[NEEDS_SHEET_COLUMN_INDICES.need].split(', '),
+    needDetails: row[NEEDS_SHEET_COLUMN_INDICES.needDetails]
+  })
 
   return result
 }
@@ -96,10 +90,10 @@ const Listings =
     // FIXME: choose correct deps to update this memoized result
     // currently only updated once on initial render
     const listings = useMemo(() => {
-      const result = props.getSheet(NEEDS_SHEET_NAME).getData()
+      const result = props.getSheet(NEEDS_OFFERS_SHEET_NAME).getData()
       return result
         .reduce(parseRow, [])
-        .sort((a, b) => b.createdAt.diff(a.createdAt)) // sort newest -> oldest
+        //.sort((a, b) => b.createdAt.diff(a.createdAt)) // sort newest -> oldest
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -122,7 +116,7 @@ const Listings =
             ></input>
           </div>
           <div className={cs.filters}>
-            {Object.values(NEED_TYPES).map(filter => (
+            {Object.values(FILTER_TYPES).map(filter => (
               <button
                 key={filter}
                 className={classnames(cs.filter, {
