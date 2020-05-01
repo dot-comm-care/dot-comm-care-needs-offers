@@ -2,7 +2,14 @@ import { useMemo } from "react"
 import { useDebounce } from "use-debounce"
 
 import useTextSearch from "./useTextSearch"
-const FULL_TEXT_SEARCH_KEYS = ["name"]
+const FULL_TEXT_SEARCH_KEYS = [
+  "name",
+  "contact",
+  "needs",
+  "needDetails",
+  "offerDetails",
+  "offers",
+]
 
 /**
  * Return true if a listing has the same type as the value of typeFilter
@@ -26,7 +33,7 @@ const filterByDate = (filters, listing) => true
  * filter functions return true and false otherwise.
  * @param  {...any} filterFuncs
  */
-const composeFilters = (...filterFuncs) => filters => listing =>
+const composeFilters = (...filterFuncs) => (filters) => (listing) =>
   filterFuncs.reduce(
     (result, filterFunc) => result && filterFunc(filters, listing),
     true
